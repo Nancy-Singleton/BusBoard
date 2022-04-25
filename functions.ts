@@ -17,8 +17,9 @@ function validateUserInput(userInput: string | null): boolean {
     return !!userInput;
 }
 
-export function busTimes(stopID: string) {
-    fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals?app_id=StopPoint&app_key=71540a422af840f68aa8cde68c33febe')
+export function busTimes(stopID: string): Promise<any> {
+    const promise = new Promise(() => 
+        fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals?app_id=StopPoint&app_key=71540a422af840f68aa8cde68c33febe')
         .then(res => {
             if (res.ok) {
                 return res
@@ -30,7 +31,8 @@ export function busTimes(stopID: string) {
             const busList = processBusList(body);
             busList.sortBuses();
             busList.printNextBuses(5);
-        }).catch(error => console.log(error));
+        }).catch(error => console.log(error)));
+    return promise;
 }
 
 function processBusList(data: any): BusList {
@@ -40,4 +42,18 @@ function processBusList(data: any): BusList {
         busList.addBus(bus);
     }
     return busList;
+}
+
+export function searchPostcode(postcode: string): void{
+    fetch(`https://api.postcodes.io/postcodes/${postcode}`)
+        .then(res => {
+            if (res.ok) {
+                return res
+            }
+            throw new Error("Invalid post code.");
+        })
+        .then(res => res.json())
+        .then(body => {
+            console.log(body.result.longitude + " " + body.result.latitude);
+        }).catch(error => console.log(error));
 }

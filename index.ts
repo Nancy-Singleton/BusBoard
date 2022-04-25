@@ -1,8 +1,13 @@
-import {busTimes, getUserInput} from "./functions";
+import {busTimes, getUserInput, searchPostcode} from "./functions";
 
 try {
-    const userInput = getUserInput();
-    busTimes(userInput);
+
+    searchPostcode("NW18DF");
+
+    //const userInput = getUserInput();
+    //busTimes(userInput);
+
+
 } catch (error: any) {
     console.log(error.message);
 }
