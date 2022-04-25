@@ -4,8 +4,8 @@ try {
 
     searchPostcode("NW18DF");
 
-    //const userInput = getUserInput();
-    //busTimes(userInput);
+    // const userInput = getUserInput();
+    // busTimes(userInput);
 
 
 } catch (error: any) {

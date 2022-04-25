@@ -44,7 +44,8 @@ function processBusList(data: any): BusList {
     return busList;
 }
 
-export function searchPostcode(postcode: string): void{
+export function searchPostcode(postcode: string): Promise<any>{
+    const promise = new Promise(() =>
     fetch(`https://api.postcodes.io/postcodes/${postcode}`)
         .then(res => {
             if (res.ok) {
@@ -55,5 +56,7 @@ export function searchPostcode(postcode: string): void{
         .then(res => res.json())
         .then(body => {
             console.log(body.result.longitude + " " + body.result.latitude);
-        }).catch(error => console.log(error));
+        }).catch(error => console.log(error)))
+    ;
+    return promise;
 }
