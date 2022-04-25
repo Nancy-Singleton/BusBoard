@@ -27,14 +27,14 @@ function busTimes(stopID: string) {
             if (res.ok) {
                 return res
             }
-            throw new Error("Did not get a 200 response");
+            throw new Error("Invalid stop code.");
         })
         .then(res => res.json())
         .then(body => {
             const busList = processBusList(body);
             busList.sortBuses();
             busList.printNextBuses(5);
-        });
+        }).catch(error => console.log(error));
 }
 
 function processBusList(data: any): BusList {
