@@ -5,7 +5,7 @@ try {
     //searchPostcode("NW18DF");
 
     const userInput = getUserInput();
-    busesFromPostcode(userInput).then(() => console.log("Completed"));
+    busesFromPostcode(userInput, 5).then(() => console.log("Completed"));
 
 
 
