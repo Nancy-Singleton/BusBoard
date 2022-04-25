@@ -23,6 +23,12 @@ function validateUserInput(userInput: string | null): boolean {
 
 function busTimes(stopID: string) {
     fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals')
+        .then(res => {
+            if (res.ok) {
+                return res
+            }
+            throw new Error("Did not get a 200 response");
+        })
         .then(res => res.json())
         .then(body => {
             const busList = processBusList(body);
