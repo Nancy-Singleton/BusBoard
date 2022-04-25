@@ -3,19 +3,23 @@ import fetch from 'node-fetch';
 function busTimes(stopID: string) {
     fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals')
         .then(res => res.json())
-        .then(body => processData(body));
+        .then(body => {
+            const busList = ProcessBusList(body);
+            busList.printNextBuses(5);
+        });
 }
 
-function processData(data: any) {
-    const busList = new NextBuses();
+function ProcessBusList(data: any): BusList {
+    const busList = new BusList();
     for (const dataItem of data) {
-        let bus = new Bus(dataItem.id, dataItem.lineName, dataItem.destinationName, dataItem.timeToStation);
+        let bus = new Bus(dataItem.lineName, dataItem.destinationName, dataItem.timeToStation);
         busList.addBus(bus);
     }
-    busList.printNextBuses(5);
+    return busList;
 }
 
-class NextBuses {
+class BusList {
+
     buses: Bus[] = [];
 
     addBus(bus: Bus): void {
@@ -35,23 +39,29 @@ class NextBuses {
 }
 
 class Bus {
-    busId: string;
     lineName: string;
     destinationName: string;
-    timeToStation: number;
+    timeToStationSeconds: number;
 
-    constructor(busId: string, lineName: string, destinationName: string, timeToStation: number) {
-        this.busId = busId;
+    constructor(lineName: string, destinationName: string, timeToStationSeconds: number) {
         this.lineName = lineName;
         this.destinationName = destinationName;
-        this.timeToStation = timeToStation;
+        this.timeToStationSeconds = timeToStationSeconds;
+    }
+
+    formatTime(): string {
+        //todo What if the bus is due in over an hour?
+        const minutes = Math.floor(this.timeToStationSeconds/60);
+        const seconds = this.timeToStationSeconds % 60;
+
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`
+
     }
 
     printBus(): void {
-        console.log("Bus ID: " + this.busId);
         console.log("Line Name: " + this.lineName);
         console.log("Destination Name: " + this.destinationName);
-        console.log("Time to Station: " + this.timeToStation);
+        console.log("Time Until Arrival: " + this.formatTime());
     }
 
 }
