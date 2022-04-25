@@ -2,9 +2,14 @@ import fetch from 'node-fetch';
 import promptSync from 'prompt-sync';
 
 const prompt = promptSync();
+try {
+    const userInput = getUserInput();
+    busTimes(userInput);
+}
+catch(error : any) {
+    console.log(error.message);
+}
 
-const userInput = getUserInput();
-busTimes(userInput);
 
 function getUserInput(): string {
     const userInput = prompt("Enter a bus stop ID: ");
@@ -15,14 +20,11 @@ function getUserInput(): string {
 }
 
 function validateUserInput(userInput: string | null): boolean {
-    if (userInput) {
-        return true
-    }
-    return false
+    return !!userInput;
 }
 
 function busTimes(stopID: string) {
-    fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals')
+    fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals?app_id=StopPoint&app_key=71540a422af840f68aa8cde68c33febe')
         .then(res => {
             if (res.ok) {
                 return res
