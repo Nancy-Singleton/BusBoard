@@ -5,6 +5,7 @@ function busTimes(stopID: string) {
         .then(res => res.json())
         .then(body => {
             const busList = ProcessBusList(body);
+            busList.sortBuses();
             busList.printNextBuses(5);
         });
 }
@@ -26,9 +27,8 @@ class BusList {
         this.buses.push(bus);
     }
 
-    //SORTER
     sortBuses(): void {
-        console.log("We will sort it");
+        this.buses.sort((bus1,bus2) => bus1.timeToStationSeconds - bus2.timeToStationSeconds)
     }
 
     printNextBuses(numBuses: number): void {
