@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import fetch, {Response} from "node-fetch";
 import {BusList} from "./classes/busList";
 import {Bus} from "./classes/bus";
 import promptSync from 'prompt-sync';
@@ -17,22 +17,19 @@ function validateUserInput(userInput: string | null): boolean {
     return !!userInput;
 }
 
-export function busTimes(stopID: string): Promise<any> {
-    const promise = new Promise(() => 
-        fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals?app_id=StopPoint&app_key=71540a422af840f68aa8cde68c33febe')
-        .then(res => {
-            if (res.ok) {
-                return res
-            }
-            throw new Error("Invalid stop code.");
-        })
-        .then(res => res.json())
-        .then(body => {
-            const busList = processBusList(body);
-            busList.sortBuses();
-            busList.printNextBuses(5);
-        }).catch(error => console.log(error)));
-    return promise;
+export async function busesFromPostcode(userInput : string) : Promise<void> {
+    await processBusTimesJSON(await pullBusTimes(userInput));
+}
+
+export async function pullBusTimes(stopID: string): Promise<Response> {
+        return await fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals?app_id=StopPoint&app_key=71540a422af840f68aa8cde68c33febe')
+}
+
+export async function processBusTimesJSON(busTimes : Response) {
+    let busTimesJSON = await busTimes.json();
+    const busList = processBusList(busTimesJSON);
+    busList.sortBuses();
+    busList.printNextBuses(5);
 }
 
 function processBusList(data: any): BusList {

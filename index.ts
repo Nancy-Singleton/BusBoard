@@ -1,11 +1,12 @@
-import {busTimes, getUserInput, searchPostcode} from "./functions";
+import {busesFromPostcode, getUserInput, searchPostcode} from "./functions";
 
 try {
 
-    searchPostcode("NW18DF");
+    //searchPostcode("NW18DF");
 
-    // const userInput = getUserInput();
-    // busTimes(userInput);
+    const userInput = getUserInput();
+    busesFromPostcode(userInput).then(() => console.log("Completed"));
+
 
 
 } catch (error: any) {
