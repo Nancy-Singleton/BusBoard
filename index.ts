@@ -1,16 +1,37 @@
 import fetch from 'node-fetch';
+import promptSync from 'prompt-sync';
+
+const prompt = promptSync();
+
+const userInput = getUserInput();
+busTimes(userInput);
+
+function getUserInput(): string {
+    const userInput = prompt("Enter a bus stop ID: ");
+    if (validateUserInput(userInput)) {
+        return userInput as string;
+    }
+    throw new Error("No user input");
+}
+
+function validateUserInput(userInput: string | null): boolean {
+    if (userInput) {
+        return true
+    }
+    return false
+}
 
 function busTimes(stopID: string) {
     fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals')
         .then(res => res.json())
         .then(body => {
-            const busList = ProcessBusList(body);
+            const busList = processBusList(body);
             busList.sortBuses();
             busList.printNextBuses(5);
         });
 }
 
-function ProcessBusList(data: any): BusList {
+function processBusList(data: any): BusList {
     const busList = new BusList();
     for (const dataItem of data) {
         let bus = new Bus(dataItem.lineName, dataItem.destinationName, dataItem.timeToStation);
@@ -19,7 +40,7 @@ function ProcessBusList(data: any): BusList {
     return busList;
 }
 
-class BusList {
+    class BusList {
 
     buses: Bus[] = [];
 
@@ -65,5 +86,3 @@ class Bus {
     }
 
 }
-
-busTimes("490008660N");

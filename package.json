@@ -18,11 +18,13 @@
   },
   "homepage": "https://github.com/Nancy-Singleton/BusBoard#readme",
   "dependencies": {
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "prompt-sync": "^4.2.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.26",
     "@types/node-fetch": "^2.6.1",
+    "@types/prompt-sync": "^4.1.1",
     "typescript": "^4.6.3"
   }
 }
