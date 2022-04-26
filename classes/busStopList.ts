@@ -25,4 +25,14 @@ export class BusStopList {
             return distance1Squared - distance2Squared;
         })
     }
+
+    getNearestBusStopIDs(numToGet: number): string[] {
+        let busStopIDs : string[] = [];
+        for(let i = 0; i < numToGet && i < this.busStopList.length; i++){
+            const busStop = this.busStopList[i];
+            //const childIDs = busStop
+            //busStopIDs = busStopIDs.concat([busStopIDs, busStop.c])
+        }
+        return [];
+    }
 }

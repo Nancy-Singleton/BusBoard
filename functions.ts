@@ -35,7 +35,7 @@ export async function busesFromPostcode(userInput : string, numBuses: number) : 
     console.log(stopTypes);
     //todo Find nearest two bus stops
     //todo Error catching
-    let busStops : string[] = ["490015367S","490015367S"];
+    let busStops : string[] = bua;
     const busList = new BusList();
     for(let i=0;i<busStops.length;i++) {
         let response = await pullBusTimes(busStops[i]);
