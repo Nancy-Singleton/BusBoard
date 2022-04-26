@@ -19,13 +19,19 @@ function validateUserInput(userInput: string | null): boolean {
 
 export async function busesFromPostcode(userInput : string, numBuses: number) : Promise<void> {
     //todo Get LAT and LON of postcode
-    /*let postcodeResponse = await  pullPostcodeDetails(userInput);
+    let postcodeResponse = await  pullPostcodeDetails(userInput);
     let postcodeJSON = await postcodeResponse.json();
     let latLong = [postcodeJSON.result.latitude,postcodeJSON.result.longitude];
-    console.log(latLong);*/
-    let stopTypesResponse = await getStopTypes();
-    let stopTypesJSON = await stopTypesResponse.json()
-    let stopTypes=stopTypesJSON.join(",");
+    //console.log(latLong);
+
+
+    const stopTypesResponse = await pullStopTypes();
+    const stopTypesJSON = await stopTypesResponse.json()
+    const stopTypes=stopTypesJSON.join(",");
+
+    const stopsNearLocation = await pullStopPointsNearLocation(latLong[0], latLong[1], stopTypes);
+    console.log(await stopsNearLocation.json());
+
     console.log(stopTypes);
     //todo Find nearest two bus stops
     //todo Error catching
@@ -40,18 +46,6 @@ export async function busesFromPostcode(userInput : string, numBuses: number) : 
     busList.printNextBuses(numBuses);
 }
 
-export async function pullBusTimes(stopID: string): Promise<Response> {
-        return await fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals?app_id=StopPoint&app_key=71540a422af840f68aa8cde68c33febe')
-}
-
-export async function getStopTypes(): Promise<Response> {
-    return await fetch('https://api.tfl.gov.uk/StopPoint/Meta/StopTypes')
-}
-
-/*export async function pullNearbyStops(latLong : string[]): Promise<Response> {
-    return await fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals?app_id=StopPoint&app_key=71540a422af840f68aa8cde68c33febe')
-}*/
-
 function processBusList(data: any, busList : BusList): BusList {
     for (const dataItem of data) {
         let bus = new Bus(dataItem.lineName, dataItem.destinationName, dataItem.timeToStation);
@@ -61,6 +55,20 @@ function processBusList(data: any, busList : BusList): BusList {
 }
 
 
-export async function pullPostcodeDetails(postcode: string): Promise<Response> {
+async function pullBusTimes(stopID: string): Promise<Response> {
+        return await fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals?app_id=StopPoint&app_key=71540a422af840f68aa8cde68c33febe')
+}
+
+async function pullStopTypes(): Promise<Response> {
+    return await fetch('https://api.tfl.gov.uk/StopPoint/Meta/StopTypes')
+}
+
+async function pullStopPointsNearLocation(latitude:number, longitude:number ,stopPointTypes: string): Promise<Response> {
+    return await fetch(`https://api.tfl.gov.uk/StopPoint/?lat=${latitude}&lon=${longitude}&stopTypes=${stopPointTypes}&radius=500&modes=bus`)
+}
+
+async function pullPostcodeDetails(postcode: string): Promise<Response> {
     return await fetch(`https://api.postcodes.io/postcodes/${postcode}`)
 }
+
+
