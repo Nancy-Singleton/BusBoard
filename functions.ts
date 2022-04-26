@@ -19,35 +19,48 @@ function validateUserInput(userInput: string | null): boolean {
     return !!userInput;
 }
 
-export async function busesFromPostcode(userInput: string, numBuses: number, numBusStops: number): Promise<void> {
-
+async function getLatLongForPostcode(userInput: string) {
     let postcodeResponse = await pullPostcodeDetails(userInput);
     let postcodeJSON = await postcodeResponse.json();
-    let latLong = [postcodeJSON.result.latitude, postcodeJSON.result.longitude];
+    return [postcodeJSON.result.latitude, postcodeJSON.result.longitude];
+}
 
+async function getStopTypesString() {
     const stopTypesResponse = await pullStopTypes();
     const stopTypesJSON = await stopTypesResponse.json()
-    const stopTypes = stopTypesJSON.join(",");
+    return stopTypesJSON.join(",");
+}
 
+async function getBusStopListNearLocation(latLong: number[], stopTypes: string) {
     const stopsNearLocation = await pullStopPointsNearLocation(latLong[0], latLong[1], stopTypes);
     const stopsNearLocationJSON = await stopsNearLocation.json();
-
     const busStopList = new BusStopList();
-    processBusStopList(stopsNearLocationJSON, busStopList);
+    createBusStopList(stopsNearLocationJSON, busStopList);
     busStopList.sortBusStops();
+    return busStopList;
+}
 
-    let busStops: string[] = busStopList.getNearestBusStopIDs(numBusStops);//["490015367S", "490015367S"];
+async function getUpcomingBusesForBusStopIDList(busStopIDs: string[]) {
     const busList = new BusList();
-    for (let i = 0; i < busStops.length; i++) {
-        let response = await pullBusTimes(busStops[i]);
+    for (let i = 0; i < busStopIDs.length; i++) {
+        let response = await pullBusTimes(busStopIDs[i]);
         let busTimesJSON = await response.json();
-        processBusList(busTimesJSON, busList);
+        appendToBusList(busTimesJSON, busList);
     }
     busList.sortBuses();
+    return busList;
+}
+
+export async function busesFromPostcode(userInput: string, numBuses: number, numBusStops: number): Promise<void> {
+    const latLong = await getLatLongForPostcode(userInput);
+    const stopTypes = await getStopTypesString();
+    const busStopList = await getBusStopListNearLocation(latLong, stopTypes);
+    const busStopIDs: string[] = busStopList.getNearestBusStopIDs(numBusStops);
+    const busList = await getUpcomingBusesForBusStopIDList(busStopIDs);
     busList.printNextBuses(numBuses);
 }
 
-function processBusStopList(data: any, busStopList: BusStopList) {
+function createBusStopList(data: any, busStopList: BusStopList) {
     for (const dataItem of data.stopPoints) {
         let parentId = dataItem.naptanId;
         let childIds: string[] = [];
@@ -59,14 +72,13 @@ function processBusStopList(data: any, busStopList: BusStopList) {
     }
 }
 
-function processBusList(data: any, busList: BusList): BusList {
+function appendToBusList(data: any, busList: BusList): BusList {
     for (const dataItem of data) {
         let bus = new Bus(dataItem.lineName, dataItem.destinationName, dataItem.timeToStation, dataItem.stationName);
         busList.addBus(bus);
     }
     return busList;
 }
-
 
 async function pullBusTimes(stopID: string): Promise<Response> {
     return await fetch('https://api.tfl.gov.uk/StopPoint/' + stopID + '/Arrivals?app_id=StopPoint&app_key=71540a422af840f68aa8cde68c33febe')
@@ -83,5 +95,3 @@ async function pullStopPointsNearLocation(latitude: number, longitude: number, s
 async function pullPostcodeDetails(postcode: string): Promise<Response> {
     return await fetch(`https://api.postcodes.io/postcodes/${postcode}`)
 }
-
-
