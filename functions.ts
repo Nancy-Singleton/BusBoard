@@ -21,7 +21,7 @@ export async function busesFromPostcode(userInput : string, numBuses: number) : 
     //todo Get LAT and LON of postcode
     //todo Find nearest two bus stops
     //todo Error catching
-    let busStops : string[] = ["490008660N"];
+    let busStops : string[] = ["490008660N","490008660N"];
     const busList = new BusList();
     for(let i=0;i<busStops.length;i++) {
         let response = await pullBusTimes(busStops[i]);
