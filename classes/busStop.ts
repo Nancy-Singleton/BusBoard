@@ -1,13 +1,14 @@
+export class BusStop {
 
-export class BusStop{
+    busStopParentId: string;
+    busStopChildIds: string[];
+    name: string;
+    distance: number;
 
-    busStopNaptanID: string;
-    longitude: number;
-    latitude: number;
-
-    constructor(busStopNaptanID: string, longitude: number, latitude: number) {
-        this.busStopNaptanID = busStopNaptanID;
-        this.longitude = longitude;
-        this.latitude = latitude;
+    constructor(busStopParentId: string, busStopChildIds: string[], name: string, distance: number) {
+        this.busStopParentId = busStopParentId;
+        this.name = name;
+        this.distance = distance;
+        this.busStopChildIds = busStopChildIds.length > 0 ? busStopChildIds : [this.busStopParentId];
     }
 }
