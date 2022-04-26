@@ -35,11 +35,10 @@ export async function busesFromPostcode(userInput: string, numBuses: number): Pr
     const busStopList = new BusStopList();
     processBusStopList(stopsNearLocationJSON, busStopList);
     busStopList.sortBusStops();
-    console.log(busStopList);
 
     //todo Find nearest two bus stops
     //todo Error catching
-    let busStops: string[] = ["490015367S", "490015367S"];
+    let busStops: string[] = busStopList.getNearestBusStopIDs(2);//["490015367S", "490015367S"];
     const busList = new BusList();
     for (let i = 0; i < busStops.length; i++) {
         let response = await pullBusTimes(busStops[i]);
@@ -64,7 +63,7 @@ function processBusStopList(data: any, busStopList: BusStopList) {
 
 function processBusList(data: any, busList: BusList): BusList {
     for (const dataItem of data) {
-        let bus = new Bus(dataItem.lineName, dataItem.destinationName, dataItem.timeToStation);
+        let bus = new Bus(dataItem.lineName, dataItem.destinationName, dataItem.timeToStation, dataItem.stationName);
         busList.addBus(bus);
     }
     return busList;

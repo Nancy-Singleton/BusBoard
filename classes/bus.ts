@@ -2,11 +2,13 @@ export class Bus {
     lineName: string;
     destinationName: string;
     timeToStationSeconds: number;
+    nextStopName: string;
 
-    constructor(lineName: string, destinationName: string, timeToStationSeconds: number) {
+    constructor(lineName: string, destinationName: string, timeToStationSeconds: number, nextStopName: string) {
         this.lineName = lineName;
         this.destinationName = destinationName;
         this.timeToStationSeconds = timeToStationSeconds;
+        this.nextStopName = nextStopName;
     }
 
     formatTime(): string {
@@ -20,8 +22,9 @@ export class Bus {
 
     printBus(): void {
         console.log("Line Name: " + this.lineName);
+        console.log("Next Station: " + this.nextStopName);
         console.log("Destination Name: " + this.destinationName);
-        console.log("Time Until Arrival: " + this.formatTime());
+        console.log("Time Until Arrival at Next Station: " + this.formatTime());
     }
 
 }
