@@ -35,6 +35,7 @@ export async function busesFromPostcode(userInput: string, numBuses: number): Pr
     const busStopList = new BusStopList();
     processBusStopList(stopsNearLocationJSON, busStopList);
     busStopList.sortBusStops();
+    console.log(busStopList);
 
     //todo Find nearest two bus stops
     //todo Error catching
@@ -51,7 +52,12 @@ export async function busesFromPostcode(userInput: string, numBuses: number): Pr
 
 function processBusStopList(data: any, busStopList: BusStopList) {
     for (const dataItem of data.stopPoints) {
-        let busStop = new BusStop("ID", dataItem.commonName, dataItem.distance);
+        let parentId = dataItem.naptanId;
+        let childIds: string[] = [];
+        for (let i = 0; i < dataItem.lineGroup.length; i++) {
+            childIds.push(dataItem.lineGroup[i].naptanIdReference);
+        }
+        let busStop = new BusStop(parentId, childIds, dataItem.commonName, dataItem.distance);
         busStopList.addBusStop(busStop);
     }
 }
