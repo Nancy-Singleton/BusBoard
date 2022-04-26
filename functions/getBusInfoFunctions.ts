@@ -6,8 +6,7 @@ import {pullBusTimes, pullPostcodeDetails, pullStopPointsNearLocation, pullStopT
 
 export async function busesFromPostcode(userInput: string, numBuses: number, numBusStops: number): Promise<void> {
     const latLong = await getLatLongForPostcode(userInput);
-    const stopTypes = await getStopTypesString();
-    const busStopList = await getBusStopListNearLocation(latLong, stopTypes);
+    const busStopList = await getBusStopListNearLatLong(latLong);
     const busStopIDs: string[] = busStopList.getNearestBusStopIDs(numBusStops);
     const busList = await getUpcomingBusesForBusStopIDList(busStopIDs);
     busList.printNextBuses(numBuses);
@@ -19,13 +18,16 @@ async function getLatLongForPostcode(userInput: string) {
     return [postcodeJSON.result.latitude, postcodeJSON.result.longitude];
 }
 
+//Translate stop types into string format for API call
 async function getStopTypesString() {
     const stopTypesResponse = await pullStopTypes();
     const stopTypesJSON = await stopTypesResponse.json()
     return stopTypesJSON.join(",");
 }
 
-async function getBusStopListNearLocation(latLong: number[], stopTypes: string) {
+//Returns a list of bus stop objects in a 200m radius of the given postcode
+async function getBusStopListNearLatLong(latLong: number[]) {
+    const stopTypes = await getStopTypesString();
     const stopsNearLocation = await pullStopPointsNearLocation(latLong[0], latLong[1], stopTypes);
     const stopsNearLocationJSON = await stopsNearLocation.json();
     const busStopList = new BusStopList();

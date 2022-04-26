@@ -1,11 +1,15 @@
-import {busesFromPostcode} from "./functions/main";
+import {busesFromPostcode} from "./functions/getBusInfoFunctions";
 import {getUserInput} from "./functions/userInput";
 
-try {
-    const userInput = getUserInput();
-    busesFromPostcode(userInput, 5,2).then(() => console.log("Completed"));
-} catch (error: any) {
-    console.log(error.message);
+async function printNextBusesNearPostcode() {
+    try {
+        const userInput = getUserInput();
+        await busesFromPostcode(userInput, 5, 2);
+    } catch (error: any) {
+        console.log("Caught error.");
+        console.log(error.message);
+    }
 }
 
+printNextBusesNearPostcode().then(() => console.log("Finished running code."));
 

@@ -11,5 +11,5 @@ export function getUserInput(): string {
     if (validateUserInput(userInput)) {
         return userInput as string;
     }
-    throw new Error("No user input");
+    throw new Error("No user input.");
 }

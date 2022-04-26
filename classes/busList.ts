@@ -13,8 +13,11 @@ export class BusList {
     }
 
     printNextBuses(numBuses: number): void {
-        for (let i = 0; i < numBuses; i++) {
+        for (let i = 0; i < numBuses && i < this.buses.length; i++) {
             this.buses[i].printBus();
+        }
+        if (this.buses.length === 0) {
+            console.log("There are no TFL buses near this postcode.")
         }
     }
 }
