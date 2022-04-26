@@ -11,12 +11,12 @@ import {
 } from "./apiResponseInterfaces";
 import {BusStop} from "../classes/busStop";
 
-export async function busesFromPostcode(userInput: string, numBuses: number, numBusStops: number): Promise<void> {
+export async function busesFromPostcode(userInput: string, numBusStops: number): Promise<BusList> {
     const latLong = await getLatLongForPostcode(userInput);
     const busStopList = await getBusStopListNearLatLong(latLong);
     const busStopIDs: string[] = busStopList.getNearestBusStopIDs(numBusStops);
     const busList = await getUpcomingBusesForBusStopIDList(busStopIDs);
-    busList.printNextBuses(numBuses);
+    return busList;
 }
 
 async function getLatLongForPostcode(userInput: string): Promise<LatLongLocation> {

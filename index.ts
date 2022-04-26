@@ -3,7 +3,8 @@ import {getUserInput} from "./functions/userInput";
 
 async function printNextBusesNearPostcode() {
     const userInput = getUserInput();
-    await busesFromPostcode(userInput, 5, 2);
+    const busList = await busesFromPostcode(userInput, 2);
+    busList.printNextBuses(5);
 }
 
 printNextBusesNearPostcode().then(() => console.log("Finished running code.")).catch(function (error) {
