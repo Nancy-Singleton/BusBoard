@@ -1,4 +1,5 @@
-import {busesFromPostcode, getUserInput} from "./functions";
+import {busesFromPostcode} from "./functions/main";
+import {getUserInput} from "./functions/userInput";
 
 try {
     const userInput = getUserInput();
