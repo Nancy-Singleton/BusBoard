@@ -15,9 +15,7 @@ export class Bus {
         //todo What if the bus is due in over an hour?
         const minutes = Math.floor(this.timeToStationSeconds / 60);
         const seconds = this.timeToStationSeconds % 60;
-
         return `${minutes}:${seconds.toString().padStart(2, '0')}`
-
     }
 
     printBus(): void {
