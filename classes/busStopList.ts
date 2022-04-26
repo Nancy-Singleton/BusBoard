@@ -17,7 +17,7 @@ export class BusStopList {
         let busStopIDs : string[] = [];
         for(let i = 0; i < numToGet && i < this.busStopList.length; i++){
             const busStop = this.busStopList[i];
-            busStopIDs = busStopIDs.concat(busStopIDs, busStop.busStopChildIds)
+            busStopIDs = busStopIDs.concat(busStop.busStopChildIds)
         }
         return busStopIDs;
     }

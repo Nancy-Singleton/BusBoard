@@ -20,7 +20,7 @@ function validateUserInput(userInput: string | null): boolean {
 }
 
 export async function busesFromPostcode(userInput: string, numBuses: number): Promise<void> {
-    //todo Get LAT and LON of postcode
+
     let postcodeResponse = await pullPostcodeDetails(userInput);
     let postcodeJSON = await postcodeResponse.json();
     let latLong = [postcodeJSON.result.latitude, postcodeJSON.result.longitude];
@@ -36,8 +36,6 @@ export async function busesFromPostcode(userInput: string, numBuses: number): Pr
     processBusStopList(stopsNearLocationJSON, busStopList);
     busStopList.sortBusStops();
 
-    //todo Find nearest two bus stops
-    //todo Error catching
     let busStops: string[] = busStopList.getNearestBusStopIDs(2);//["490015367S", "490015367S"];
     const busList = new BusList();
     for (let i = 0; i < busStops.length; i++) {
