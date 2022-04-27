@@ -58,7 +58,9 @@ async function getUpcomingBusesForBusStopIDList(busStopIDs: string[]) {
 function listChildIds(lineGroup: any[]) {
     let childIds: string[] = [];
     for (let i = 0; i < lineGroup.length; i++) {
-        childIds.push(lineGroup[i].naptanIdReference);
+        if (lineGroup[i].naptanIdReference) {
+            childIds.push(lineGroup[i].naptanIdReference);
+        }
     }
     return childIds;
 }
